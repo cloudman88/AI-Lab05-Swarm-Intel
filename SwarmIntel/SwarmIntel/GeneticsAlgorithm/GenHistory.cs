@@ -1,4 +1,4 @@
-﻿namespace ChilisExp.GeneticsAlgorithms
+﻿namespace SwarmIntel.GeneticsAlgorithm
 {
     class GenHistory<T> where T : Gen
     {

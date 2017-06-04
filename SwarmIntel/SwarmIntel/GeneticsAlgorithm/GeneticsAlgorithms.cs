@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Diagnostics;
 using System.Linq;
 
-namespace ChilisExp.GeneticsAlgorithms
+namespace SwarmIntel.GeneticsAlgorithm
 {
     public enum SelectionMethod  
     { 
@@ -16,25 +16,25 @@ namespace ChilisExp.GeneticsAlgorithms
     public enum CrossoverMethod
     {
         // these are for String Search only (non-ordered chromosomes)
-        SinglePoint,
-        TwoPoint,
-        Uniform,
+        //SinglePoint,
+        //TwoPoint,
+        //Uniform,
         // these are for Nqueens,bin packing problem only (ordered chromosomes)
-        //Pmx, //Partially Matched
-        //Ox,  //Ordered
-        //Cx,  //Cycle 
-        //Er   //Edge recombination
+        Pmx, //Partially Matched
+        Ox,  //Ordered
+        Cx,  //Cycle 
+        Er   //Edge recombination
     }
     enum MutationOperator
     {
         Exchange,
-        IndirectReplacement,
-        PointMutation3Times,
-        //Displacement,
-        //Insertion,
-        //SimpleInversion,
-        //Inversion,
-        //Scramble,
+        Displacement,
+        Insertion,
+        SimpleInversion,
+        Inversion,
+        Scramble,
+        //IndirectReplacement,
+        //PointMutation3Times,
     }
     abstract class GeneticsAlgorithms<T> where T : Gen
     {

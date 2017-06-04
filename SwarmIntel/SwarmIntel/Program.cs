@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+using SwarmIntel.GeneticsAlgorithm;
+using SwarmIntel.Genetics_Sol;
 using SwarmIntel.Tools;
 
 namespace SwarmIntel
@@ -11,8 +9,12 @@ namespace SwarmIntel
     {
         static void Main(string[] args)
         {
-             CVR_Probelm cvrp = new CVR_Probelm(1);
-
+            do
+            {
+                CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Pmx, SelectionMethod.Tournament,MutationOperator.Exchange);
+                cvrpGenetics.init_population();
+                cvrpGenetics.run_algorithm();                
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
     }
 }
