@@ -10,11 +10,11 @@ namespace SwarmIntel.Genetics_Sol
     class CvrpGenetics : GeneticsAlgorithms <CvrpGen>
     {
         private readonly MutationOperator _mutationOperator;
-        public static CvrProbelm CvrProbelm;
+        public static CvrProbelm CvrPro;
         public CvrpGenetics(CrossoverMethod crossMethod, SelectionMethod selectionMethod, MutationOperator mutationOperator) : base(crossMethod, selectionMethod)
         {
             _mutationOperator = mutationOperator;
-            CvrProbelm = new CvrProbelm(1);
+            CvrPro = new CvrProbelm(1);
             LocalOptSearchEnabled = false;
         }
 
@@ -22,8 +22,8 @@ namespace SwarmIntel.Genetics_Sol
         {
             for (int i = 0; i < GaPopSize; i++)
             {
-                Population.Add(new CvrpGen(CvrProbelm.NumOfVehicles, CvrProbelm.Locations));
-                Buffer.Add(new CvrpGen(CvrProbelm.NumOfVehicles, CvrProbelm.Locations));
+                Population.Add(new CvrpGen(CvrPro.NumOfVehicles, CvrPro.Locations,Rand));
+                Buffer.Add(new CvrpGen(CvrPro.NumOfVehicles, CvrPro.Locations,Rand));
             }
         }
 
@@ -31,7 +31,6 @@ namespace SwarmIntel.Genetics_Sol
         {
             for (int i = 0; i < GaPopSize; i++)
             {
-                //Population[i].SupplyDemands(CvrProbelm.Locations);
                 Population[i].CalcCost();
             }
         }
@@ -41,24 +40,21 @@ namespace SwarmIntel.Genetics_Sol
             List<int> nQlist = member.GetRoutesPermutation();
             int ipos1 = Rand.Next()%nQlist.Count;
             int ipos2;
-            checkcars();
             switch (_mutationOperator)
             {
                 case MutationOperator.Exchange:
                     ipos2 = Rand.Next()% nQlist.Count;
                     nQlist = MutOpExchange(ipos1, ipos2, nQlist);
-                    checkcars();
-                    for (int i = 0; i < CvrProbelm.NumOfVehicles; i++)
+                    for (int i = 0; i < CvrPro.NumOfVehicles; i++)
                     {
                         var count = member.Vehicles[i].Route.Count;
+                        member.Vehicles[i].Route.Clear();
                         for (int q = 0; q < count; q++)
                         {
                             member.Vehicles[i].Route.Add(nQlist.First());
                             nQlist.RemoveAt(0);
                         }
-                        checkcars();
                     }
-                    checkcars();
                     break;
             }
         }
@@ -88,19 +84,17 @@ namespace SwarmIntel.Genetics_Sol
                     nQlist2[index2] = val2;
                     nQlist1[ipos] = val2;
                     nQlist2[ipos] = val1;
-                    for (int i = 0; i < CvrProbelm.NumOfVehicles; i++)
+                    for (int i = 0; i < CvrPro.NumOfVehicles; i++)
                     {
                         bufGen.Vehicles[i].Route.Clear();
-                        for (int q = 0; q < gen2.Vehicles[i].Route.Count; q++)
+                        //var chosenGen = (Rand.Next()%2 == 1) ? gen1 : gen2;
+                        for (int q = 0; q < gen1.Vehicles[i].Route.Count; q++)
                         {
                             bufGen.Vehicles[i].Route.Add(nQlist2.First());
                             nQlist2.RemoveAt(0);    
                                                                               
                         }
-                        if (bufGen.Vehicles[i].Route.Count > 22)
-                        {
-                            var ipd = 9;
-                        }
+                        //if (bufGen.Vehicles[i].Route.Count > 22)
                     }
                     break;
                 //case CrossoverMethod.OX:
@@ -239,7 +233,7 @@ namespace SwarmIntel.Genetics_Sol
         protected override Tuple<string, uint> get_best_gen_details(CvrpGen gen)
         {
             string str = "";
-            for (int i = 0; i < CvrProbelm.NumOfVehicles; i++)
+            for (int i = 0; i < CvrPro.NumOfVehicles; i++)
             {
                 str += i + ") ";
                 foreach (int cityId in gen.Vehicles[i].Route)
@@ -271,11 +265,8 @@ namespace SwarmIntel.Genetics_Sol
             stopWatch.Start();
             for (int i = 0; i < GaMaxiter; i++)
             {
-                checkcars();
                 calc_fitness();      // calculate fitness
-                checkcars();
                 sort_by_fitness();   // sort them
-                checkcars();
                 var avg = calc_avg(); // calc avg
                 var stdDev = calc_std_dev(avg); //calc std dev
 
@@ -290,15 +281,18 @@ namespace SwarmIntel.Genetics_Sol
                 if (LocalOptSearchEnabled == true) search_local_optima(avg, stdDev, i);
 
                 stopWatch.Restart(); // restart timers for next iteration
-                if ((Population)[0].Fitness == CvrProbelm.Opt)
+                if ((Population)[0].Fitness <= CvrPro.Opt)
                 {
-                    totalIteration = i + 1; // save number of iteration                                                           
+                    totalIteration = i + 1; // save number of iteration            
+                    int res = Population[0].VerifyRoutes();
+                    if (res != 0)
+                    {
+                        var opl = 87;
+                    }
                     break;
                 }
                 Mate();     // mate the population together
-                checkcars();
                 swap_population_with_buffer();       // swap buffers
-                checkcars();
             }
             if (totalIteration == GaMaxiter)
             {
@@ -314,23 +308,40 @@ namespace SwarmIntel.Genetics_Sol
             Console.WriteLine("Elaspeds - Ticks = " + (totalElasped - totalTicks) + "\n");
         }
 
-        private void checkcars()
-        {
-            foreach (CvrpGen cvrpGen in Population)
-            {
-                var x = cvrpGen.GetRoutesPermutation();
-                if (x.Count > 22)
-                {
-                    var ko = 90;
-                }
-                foreach (Vehicle vehicle in cvrpGen.Vehicles)
-                {
-                    if (vehicle.Route.Count > 22)
-                    {
-                        var dfd = 9;
-                    }
-                }
-            }
-        }
+
+        //private void checkcars()
+        //{
+        //    foreach (CvrpGen cvrpGen in Population)
+        //    {
+        //        var x = cvrpGen.GetRoutesPermutation();
+        //        if (x.Count > 22)
+        //        {
+        //            var ko = 90;
+        //        }
+        //        foreach (Vehicle vehicle in cvrpGen.Vehicles)
+        //        {
+        //            if (vehicle.Route.Count > 22)
+        //            {
+        //                var dfd = 9;
+        //            }
+        //        }
+        //    }
+
+        //    foreach (CvrpGen cvrpGen in Buffer)
+        //    {
+        //        var x = cvrpGen.GetRoutesPermutation();
+        //        if (x.Count > 22)
+        //        {
+        //            var ko = 90;
+        //        }
+        //        foreach (Vehicle vehicle in cvrpGen.Vehicles)
+        //        {
+        //            if (vehicle.Route.Count > 22)
+        //            {
+        //                var dfd = 9;
+        //            }
+        //        }
+        //    }
+        //}
     }
 }

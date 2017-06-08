@@ -15,7 +15,7 @@ namespace SwarmIntel.Tools
         public Vehicle(int id)
         {
             Id = id;
-            SupplyLeft = CvrpGenetics.CvrProbelm.Capacity;
+            SupplyLeft = CvrpGenetics.CvrPro.Capacity;
             Route = new List<int>();
         }
     }

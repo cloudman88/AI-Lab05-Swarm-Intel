@@ -1,4 +1,5 @@
 ﻿using System;
+using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using SwarmIntel.GeneticsAlgorithm;
@@ -12,7 +13,7 @@ namespace SwarmIntel.Genetics_Sol
         public int NumOfVehicles;
         public double Cost;
 
-        public CvrpGen(int numOfVehicles, List<Location> locations)
+        public CvrpGen(int numOfVehicles, List<Location> locations, Random rand)
         {
             Cost = 0;
             NumOfVehicles = numOfVehicles;
@@ -21,10 +22,10 @@ namespace SwarmIntel.Genetics_Sol
             {
                 Vehicles.Add(new Vehicle(i));
             }
-            SupplyDemands(locations);
+            SupplyDemands(locations,rand);
         }
 
-        public void SupplyDemands(List<Location> locations)
+        public void SupplyDemands(List<Location> locations, Random rand)
         {
             List<Location> cities = new List<Location>();
             foreach (Location location in locations)
@@ -32,41 +33,50 @@ namespace SwarmIntel.Genetics_Sol
                 cities.Add(new Location(location));
             }
             cities.RemoveAt(0); //remove warehouse from cities
-            foreach (Vehicle vehicle in Vehicles)
+            List<Location> citiesSortedByDemmand =  cities.OrderByDescending(x => x.Demand).ToList();
+            for (int i = 0; i < citiesSortedByDemmand.Count; i++)
             {
-                int i = 0;
-                while (vehicle.SupplyLeft > 0 && i< cities.Count)
+                bool delivered = false;
+                while (delivered == false)
                 {
-                    if (vehicle.Route.Count > 22)
+                    int chosenVechileIndex = rand.Next() % Vehicles.Count;
+                    var vehicle = Vehicles[chosenVechileIndex];
+                    var city = citiesSortedByDemmand[i];
+                    if (vehicle.SupplyLeft > 0 && city.Demand <= Vehicles[chosenVechileIndex].SupplyLeft)
                     {
-                        var d = 90;
-                    }
-                    if (cities[i].Demand <= (vehicle.SupplyLeft))
-                    {
-                        DeliverSuplyToCity(cities[i], vehicle);
-                        vehicle.Route.Add(cities[i].Id);
-                        cities.RemoveAt(i);
-                    }
-                    else
-                    {
-                        i++;                        
+                        vehicle.SupplyLeft -= (city.Demand - city.CurrentSupply);
+                        city.CurrentSupply = city.Demand;
+                        vehicle.Route.Add(citiesSortedByDemmand[i].Id);
+                        delivered = true;
                     }
                 }
-            }
+            }           
         }
 
-        private void DeliverSuplyToCity(Location city,Vehicle vehicle)
+        public int VerifyRoutes()
         {
-            if (city.Demand - city.CurrentSupply < vehicle.SupplyLeft)
+            List<Location> copyLocations = new List<Location>(CvrpGenetics.CvrPro.Locations);
+            int shortage = 0;
+            foreach (Vehicle vehicle in Vehicles)
             {
-                vehicle.SupplyLeft -= (city.Demand- city.CurrentSupply);
-                city.CurrentSupply = city.Demand;
+                int capacityLeft = CvrpGenetics.CvrPro.Capacity;
+                int sum = 0;
+                foreach (int cityId in vehicle.Route)
+                {
+                    capacityLeft -= copyLocations[cityId-1].Demand;
+                    sum += copyLocations[cityId - 1].Demand;                   
+                    if (sum > CvrpGenetics.CvrPro.Capacity)
+                    {
+                        var u = 900;
+                    }
+                }
+                if (capacityLeft < 0)
+                {
+                    shortage += 10;
+                }
             }
-            else
-            {
-                city.CurrentSupply += vehicle.SupplyLeft;
-                vehicle.SupplyLeft = 0;
-            }            
+
+            return shortage;
         }
 
         public void CalcCost()
@@ -78,16 +88,17 @@ namespace SwarmIntel.Genetics_Sol
                 if (route.Count > 0)
                 {
                     // calc first ride from warehouse
-                    Cost += GetDistance(CvrpGenetics.CvrProbelm.Locations.First(), CvrpGenetics.CvrProbelm.Locations[route.First()]);
+                    Cost += GetDistance(CvrpGenetics.CvrPro.Locations.First(), CvrpGenetics.CvrPro.Locations[route.First()-1]);
                     for (int i = 0, j=1; i < vehicle.Route.Count-1; i++,j++)
                     {
-                        Cost += GetDistance(CvrpGenetics.CvrProbelm.Locations[route[i]-1], CvrpGenetics.CvrProbelm.Locations[route[j]-1]);
+                        Cost += GetDistance(CvrpGenetics.CvrPro.Locations[route[i]-1], CvrpGenetics.CvrPro.Locations[route[j]-1]);
                     }
                     // calc last ride back  to warehouse
-                    Cost += GetDistance(CvrpGenetics.CvrProbelm.Locations[route.Last()-1], CvrpGenetics.CvrProbelm.Locations.First());                    
+                    Cost += GetDistance(CvrpGenetics.CvrPro.Locations[route.Last()-1], CvrpGenetics.CvrPro.Locations.First());                    
                 }
             }
             Fitness = (uint)Math.Round(Cost);
+            Fitness += (uint) VerifyRoutes();
         }
 
         private double GetDistance(Location location1, Location location2)

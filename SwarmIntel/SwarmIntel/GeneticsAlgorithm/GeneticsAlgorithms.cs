@@ -39,10 +39,10 @@ namespace SwarmIntel.GeneticsAlgorithm
     abstract class GeneticsAlgorithms<T> where T : Gen
     {
         protected readonly Random Rand;
-        protected const int GaMaxiter = 1000;		// maximum iterations 16384
+        protected const int GaMaxiter = 800;		// maximum iterations 16384
         protected const int GaPopSize = 2000;		// ga population size 2048
-        protected const double GaElitRate = 0.15;	    // elitism rate
-        protected const double GaMutationRate = 0.15;    // mutation rate
+        protected const double GaElitRate = 0.1;	    // elitism rate
+        protected const double GaMutationRate = 0.25;    // mutation rate
         protected const int MaxRand = Int32.MaxValue;    //Max value of random function in C#
         protected const double GaMutation = MaxRand * GaMutationRate;
         protected const uint AgeThreshold = 20;

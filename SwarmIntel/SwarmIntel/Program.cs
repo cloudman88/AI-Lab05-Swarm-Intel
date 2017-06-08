@@ -11,7 +11,7 @@ namespace SwarmIntel
         {
             do
             {
-                CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Pmx, SelectionMethod.Tournament,MutationOperator.Exchange);
+                CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Pmx, SelectionMethod.Truncation,MutationOperator.Exchange);
                 cvrpGenetics.init_population();
                 cvrpGenetics.run_algorithm();                
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
