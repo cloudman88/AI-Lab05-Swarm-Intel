@@ -1,8 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
+﻿using System.Collections.Generic;
 using SwarmIntel.Genetics_Sol;
 
 namespace SwarmIntel.Tools
@@ -15,8 +11,14 @@ namespace SwarmIntel.Tools
         public Vehicle(int id)
         {
             Id = id;
-            SupplyLeft = CvrpGenetics.CvrPro.Capacity;
+            SupplyLeft = ProblemData.CvrPro.Capacity;
             Route = new List<int>();
+        }
+        public Vehicle(Vehicle srcVehicle)
+        {
+            Id = srcVehicle.Id;
+            SupplyLeft = srcVehicle.SupplyLeft;
+            Route = new List<int>(srcVehicle.Route);
         }
     }
 }

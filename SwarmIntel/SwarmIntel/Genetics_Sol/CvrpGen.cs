@@ -1,5 +1,4 @@
 ﻿using System;
-using System.CodeDom;
 using System.Collections.Generic;
 using System.Linq;
 using SwarmIntel.GeneticsAlgorithm;
@@ -10,25 +9,33 @@ namespace SwarmIntel.Genetics_Sol
     class CvrpGen : Gen
     {
         public List<Vehicle> Vehicles;
-        public int NumOfVehicles;
         public double Cost;
 
-        public CvrpGen(int numOfVehicles, List<Location> locations, Random rand)
+        public CvrpGen(Random rand)
         {
             Cost = 0;
-            NumOfVehicles = numOfVehicles;
             Vehicles= new List<Vehicle>();
-            for (int i = 1; i <= NumOfVehicles; i++)
+            for (int i = 1; i <= ProblemData.CvrPro.NumOfVehicles; i++)
             {
                 Vehicles.Add(new Vehicle(i));
             }
-            SupplyDemands(locations,rand);
+            SupplyDemands(rand);
         }
 
-        public void SupplyDemands(List<Location> locations, Random rand)
+        public CvrpGen(CvrpGen source)
+        {
+            Cost = source.Cost;
+            Vehicles = new List<Vehicle>();
+            for (int i = 0; i < ProblemData.CvrPro.NumOfVehicles; i++)
+            {                
+                Vehicles.Add(new Vehicle(source.Vehicles[i]));
+            }
+        }
+
+        public void SupplyDemands(Random rand)
         {
             List<Location> cities = new List<Location>();
-            foreach (Location location in locations)
+            foreach (Location location in ProblemData.CvrPro.Locations)
             {
                 cities.Add(new Location(location));
             }
@@ -55,17 +62,17 @@ namespace SwarmIntel.Genetics_Sol
 
         public int VerifyRoutes()
         {
-            List<Location> copyLocations = new List<Location>(CvrpGenetics.CvrPro.Locations);
+            List<Location> copyLocations = new List<Location>(ProblemData.CvrPro.Locations);
             int shortage = 0;
             foreach (Vehicle vehicle in Vehicles)
             {
-                int capacityLeft = CvrpGenetics.CvrPro.Capacity;
+                int capacityLeft = ProblemData.CvrPro.Capacity;
                 int sum = 0;
                 foreach (int cityId in vehicle.Route)
                 {
                     capacityLeft -= copyLocations[cityId-1].Demand;
                     sum += copyLocations[cityId - 1].Demand;                   
-                    if (sum > CvrpGenetics.CvrPro.Capacity)
+                    if (sum > ProblemData.CvrPro.Capacity)
                     {
                         var u = 900;
                     }
@@ -88,22 +95,17 @@ namespace SwarmIntel.Genetics_Sol
                 if (route.Count > 0)
                 {
                     // calc first ride from warehouse
-                    Cost += GetDistance(CvrpGenetics.CvrPro.Locations.First(), CvrpGenetics.CvrPro.Locations[route.First()-1]);
+                    Cost += Location.GetDistance(ProblemData.CvrPro.Locations.First(), ProblemData.CvrPro.Locations[route.First()-1]);
                     for (int i = 0, j=1; i < vehicle.Route.Count-1; i++,j++)
                     {
-                        Cost += GetDistance(CvrpGenetics.CvrPro.Locations[route[i]-1], CvrpGenetics.CvrPro.Locations[route[j]-1]);
+                        Cost += Location.GetDistance(ProblemData.CvrPro.Locations[route[i]-1], ProblemData.CvrPro.Locations[route[j]-1]);
                     }
                     // calc last ride back  to warehouse
-                    Cost += GetDistance(CvrpGenetics.CvrPro.Locations[route.Last()-1], CvrpGenetics.CvrPro.Locations.First());                    
+                    Cost += Location.GetDistance(ProblemData.CvrPro.Locations[route.Last()-1], ProblemData.CvrPro.Locations.First());                    
                 }
             }
             Fitness = (uint)Math.Round(Cost);
             Fitness += (uint) VerifyRoutes();
-        }
-
-        private double GetDistance(Location location1, Location location2)
-        {
-            return Math.Sqrt(Math.Pow(Math.Abs(location1.X - location2.X),2) + Math.Pow(Math.Abs(location1.Y - location2.Y),2));
         }
 
         public List<int> GetRoutesPermutation()

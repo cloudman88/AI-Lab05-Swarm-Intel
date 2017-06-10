@@ -22,8 +22,8 @@ namespace SwarmIntel.Genetics_Sol
         {
             for (int i = 0; i < GaPopSize; i++)
             {
-                Population.Add(new CvrpGen(CvrPro.NumOfVehicles, CvrPro.Locations,Rand));
-                Buffer.Add(new CvrpGen(CvrPro.NumOfVehicles, CvrPro.Locations,Rand));
+                Population.Add(new CvrpGen(Rand));
+                Buffer.Add(new CvrpGen(Rand));
             }
         }
 

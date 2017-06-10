@@ -1,8 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Linq;
-using System.Text;
-using System.Threading.Tasks;
 
 namespace SwarmIntel.Tools
 {
@@ -29,13 +25,10 @@ namespace SwarmIntel.Tools
             Demand = location.Demand;
             CurrentSupply = location.CurrentSupply;
         }
-        //public static bool operator ==(Location leftLocation, Location rightLocation)
-        //{
-        //    return (leftLocation.X == rightLocation.X && leftLocation.Y == rightLocation.Y && leftLocation.Demand == rightLocation.Demand);
-        //}
-        //public static bool operator !=(Location leftLocation, Location rightLocation)
-        //{
-        //    return !(leftLocation == rightLocation);
-        //}
+
+        public static double GetDistance(Location location1, Location location2)
+        {
+            return Math.Sqrt(Math.Pow(Math.Abs(location1.X - location2.X), 2) + Math.Pow(Math.Abs(location1.Y - location2.Y), 2));
+        }
     }
 }
