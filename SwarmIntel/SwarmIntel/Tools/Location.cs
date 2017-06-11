@@ -26,9 +26,9 @@ namespace SwarmIntel.Tools
             CurrentSupply = location.CurrentSupply;
         }
 
-        public static double GetDistance(Location location1, Location location2)
+        public static float GetDistance(Location location1, Location location2)
         {
-            return Math.Sqrt(Math.Pow(Math.Abs(location1.X - location2.X), 2) + Math.Pow(Math.Abs(location1.Y - location2.Y), 2));
+            return (float) Math.Sqrt(Math.Pow(Math.Abs(location1.X - location2.X), 2) + Math.Pow(Math.Abs(location1.Y - location2.Y), 2));
         }
     }
 }

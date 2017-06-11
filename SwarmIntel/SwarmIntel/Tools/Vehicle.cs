@@ -1,5 +1,4 @@
 ﻿using System.Collections.Generic;
-using SwarmIntel.Genetics_Sol;
 
 namespace SwarmIntel.Tools
 {

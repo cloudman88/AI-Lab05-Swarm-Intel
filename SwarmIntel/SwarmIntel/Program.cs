@@ -1,4 +1,7 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using SwarmIntel.ACO_Sol;
 using SwarmIntel.GeneticsAlgorithm;
 using SwarmIntel.Genetics_Sol;
 using SwarmIntel.Local_Search_Sol;
@@ -12,13 +15,18 @@ namespace SwarmIntel
         {
             do
             {
-                //CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Pmx, SelectionMethod.Truncation,MutationOperator.Exchange);
-                //cvrpGenetics.init_population();
-                //cvrpGenetics.run_algorithm();        
                 ProblemData pData = new ProblemData(1);
-                CvrpLocalSearch cvrpLocalSearch = new CvrpLocalSearch(1);
-                cvrpLocalSearch.Init();
-                cvrpLocalSearch.run_algorithm();
+                CVRP_AOC cvrpAoc = new CVRP_AOC();
+                cvrpAoc.Init();
+                cvrpAoc.run_algorithm();
+
+                //CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Cx, SelectionMethod.Truncation, MutationOperator.Exchange);
+                //cvrpGenetics.init_population();
+                //cvrpGenetics.run_algorithm();
+
+                //CvrpLocalSearch cvrpLocalSearch = new CvrpLocalSearch();
+                //cvrpLocalSearch.Init();
+                //cvrpLocalSearch.run_algorithm();
            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
     }

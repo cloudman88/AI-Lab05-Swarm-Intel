@@ -21,9 +21,9 @@ namespace SwarmIntel.GeneticsAlgorithm
         //Uniform,
         // these are for Nqueens,bin packing problem only (ordered chromosomes)
         Pmx, //Partially Matched
-        Ox,  //Ordered
+        //Ox,  //Ordered
         Cx,  //Cycle 
-        Er   //Edge recombination
+        //Er   //Edge recombination
     }
     enum MutationOperator
     {
