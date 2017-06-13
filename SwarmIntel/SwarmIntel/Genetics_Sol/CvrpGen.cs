@@ -42,7 +42,7 @@ namespace SwarmIntel.Genetics_Sol
             cities.RemoveAt(0);  
             for (int i = 0; i < ProblemData.CvrPro.Locations.Count-1; i++)
             {
-                nearestCity = GetNearestCity(nearestCity, cities);
+                nearestCity = Location.GetNearestCity(nearestCity, cities);
                 citiesSortedByDistances.Add(nearestCity);
             }
             foreach (Vehicle vehicle in Vehicles)
@@ -83,24 +83,7 @@ namespace SwarmIntel.Genetics_Sol
             }                            
         }
 
-        private Location GetNearestCity(Location location, List<Location> cities)
-        {
-            Location nearestCity = null;
-            int minDistance = Int32.MaxValue;
-            int minIndex = -1;
-            for (int i = 0; i < cities.Count; i++)
-            {
-                var city = cities[i];
-                var distance = Location.GetDistance(location, city);
-                if (minDistance > distance)
-                {
-                    nearestCity = new Location(city);
-                    minIndex = i;
-                }
-            }
-            if (nearestCity!=null) cities.RemoveAt(minIndex);
-            return nearestCity;
-        }
+        
         
         public void SupplyDemandsBySize(Random rand)
         {

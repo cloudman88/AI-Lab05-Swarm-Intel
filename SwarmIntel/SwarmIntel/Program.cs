@@ -13,20 +13,10 @@ namespace SwarmIntel
     {
         static void Main(string[] args)
         {
+            Manager man = new Manager();
             do
             {
-                ProblemData pData = new ProblemData(1);
-                CVRP_AOC cvrpAoc = new CVRP_AOC();
-                cvrpAoc.Init();
-                cvrpAoc.run_algorithm();
-
-                //CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Pmx, SelectionMethod.Tournament, MutationOperator.Displacement);
-                //cvrpGenetics.init_population();
-                //cvrpGenetics.run_algorithm();
-
-                //CvrpLocalSearch cvrpLocalSearch = new CvrpLocalSearch();
-                //cvrpLocalSearch.Init();
-                //cvrpLocalSearch.run_algorithm();
+                man.Run();
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
     }

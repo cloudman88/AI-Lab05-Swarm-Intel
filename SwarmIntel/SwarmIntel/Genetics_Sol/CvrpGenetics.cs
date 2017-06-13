@@ -222,7 +222,7 @@ namespace SwarmIntel.Genetics_Sol
                     str += cityId + "=>";
                 }
                 str = str.Remove(str.Length - 2);
-                str += " ";
+                str += "\n";
             }
             return new Tuple<string, uint>(str,gen.Fitness);
         }
