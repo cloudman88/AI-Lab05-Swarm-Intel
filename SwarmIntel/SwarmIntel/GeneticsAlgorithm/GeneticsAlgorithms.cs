@@ -15,31 +15,32 @@ namespace SwarmIntel.GeneticsAlgorithm
     }
     public enum CrossoverMethod
     {
-        // these are for String Search only (non-ordered chromosomes)
+        //ordered chromosomes
+        Pmx, //Partially Matched
+        Er   //Edge recombination
+        //Ox,  //Ordered
+        //Cx,  //Cycle 
+
+        // non-ordered chromosomes
         //SinglePoint,
         //TwoPoint,
         //Uniform,
-        // these are for Nqueens,bin packing problem only (ordered chromosomes)
-        Pmx, //Partially Matched
-        //Ox,  //Ordered
-        Cx,  //Cycle 
-        //Er   //Edge recombination
     }
     enum MutationOperator
     {
         Exchange,
         Displacement,
-        Insertion,
-        SimpleInversion,
-        Inversion,
-        Scramble,
+        //Insertion,
+        //SimpleInversion,
+        //Inversion,
+        //Scramble,
         //IndirectReplacement,
         //PointMutation3Times,
     }
     abstract class GeneticsAlgorithms<T> where T : Gen
     {
         protected readonly Random Rand;
-        protected const int GaMaxiter = 800;		// maximum iterations 16384
+        protected const int GaMaxiter = 400;		// maximum iterations 16384
         protected const int GaPopSize = 2000;		// ga population size 2048
         protected const double GaElitRate = 0.1;	    // elitism rate
         protected const double GaMutationRate = 0.25;    // mutation rate

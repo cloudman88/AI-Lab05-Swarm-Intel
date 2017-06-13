@@ -20,14 +20,14 @@ namespace SwarmIntel
                 cvrpAoc.Init();
                 cvrpAoc.run_algorithm();
 
-                //CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Cx, SelectionMethod.Truncation, MutationOperator.Exchange);
+                //CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Pmx, SelectionMethod.Tournament, MutationOperator.Displacement);
                 //cvrpGenetics.init_population();
                 //cvrpGenetics.run_algorithm();
 
                 //CvrpLocalSearch cvrpLocalSearch = new CvrpLocalSearch();
                 //cvrpLocalSearch.Init();
                 //cvrpLocalSearch.run_algorithm();
-           } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
+            } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
     }
 }
