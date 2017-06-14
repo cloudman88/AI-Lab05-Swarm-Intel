@@ -251,63 +251,43 @@ namespace SwarmIntel.Genetics_Sol
 
         public override void run_algorithm()
         {
-            string text = "";
-            long ticksAvg = 0;
-            uint avgFit = 0;
-            int count = 0;
-            for (int j = 0; j < 10; j++)
+            long totalTicks = 0;
+            int totalIteration = -1;
+            Stopwatch stopWatch = new Stopwatch(); //stopwatch is used for both clock ticks and elasped time measuring
+            stopWatch.Start();
+            for (int i = 0; i < GaMaxiter; i++)
             {
-                Population.Clear();
-                Buffer.Clear();
-                init_population();                
-                long totalTicks = 0;
-                int totalIteration = -1;
-                Stopwatch stopWatch = new Stopwatch(); //stopwatch is used for both clock ticks and elasped time measuring
-                stopWatch.Start();
-                for (int i = 0; i < GaMaxiter; i++)
-                {
-                    calc_fitness();      // calculate fitness
-                    sort_by_fitness();   // sort them
-                    var avg = calc_avg(); // calc avg
-                    var stdDev = calc_std_dev(avg); //calc std dev
+                calc_fitness();      // calculate fitness
+                sort_by_fitness();   // sort them
+                var avg = calc_avg(); // calc avg
+                var stdDev = calc_std_dev(avg); //calc std dev
 
-                    //calculate time differences                
-                    stopWatch.Stop();
-                    double ticks = (stopWatch.ElapsedTicks / (double)Stopwatch.Frequency) * 1000;
-                    totalTicks += (long)ticks;
+                //calculate time differences                
+                stopWatch.Stop();
+                double ticks = (stopWatch.ElapsedTicks / (double)Stopwatch.Frequency) * 1000;
+                totalTicks += (long)ticks;
 
-                    print_result_details(Population[0], avg, stdDev, i);  // print the best one, average and std dev by iteration number                
-                    if (LocalOptSearchEnabled == true) search_local_optima(avg, stdDev, i);
-
-                    stopWatch.Restart(); // restart timers for next iteration
-                    if ((Population)[0].Fitness <= ProblemData.CvrPro.Opt)
-                    {
-                        count++;
-                        totalIteration = i + 1; // save number of iteration            
-                        break;
-                    }
-                    Mate();     // mate the population together
-                    swap_population_with_buffer();       // swap buffers
-                }
-                if (totalIteration == GaMaxiter)
+                print_result_details(Population[0], avg, stdDev, i);  // print the best one, average and std dev by iteration number                
+                if (LocalOptSearchEnabled == true) search_local_optima(avg, stdDev, i);
+                stopWatch.Restart(); // restart timers for next iteration
+                if ((Population)[0].Fitness <= ProblemData.CvrPro.Opt)
                 {
-                    Console.WriteLine("Failed to find solution in " + totalIteration + " iterations.");
+                    totalIteration = i + 1; // save number of iteration            
+                    break;
                 }
-                else
-                {
-                    Console.WriteLine("Iterations: " + totalIteration);
-                }
-                Console.WriteLine("\nTimig in milliseconds:");
-                Console.WriteLine("Total Ticks " + totalTicks);
-                ticksAvg += totalTicks;
-                avgFit += Population[0].Fitness;
+                Mate();     // mate the population together
+                swap_population_with_buffer();       // swap buffers
             }
-            ticksAvg /= 10;
-            avgFit /= 10;
-            text += "ticksAvg: " + ticksAvg + " fitAvg: " + avgFit + " suc: " + count;
-            System.IO.File.WriteAllText("genetics.txt", text);
-            
-                        
+            if (totalIteration == GaMaxiter)
+            {
+                Console.WriteLine("Failed to find solution in " + totalIteration + " iterations.");
+            }
+            else
+            {
+                Console.WriteLine("Iterations: " + totalIteration);
+            }
+            Console.WriteLine("\nTimig in milliseconds:");
+            Console.WriteLine("Total Ticks " + totalTicks);
         }        
     }
 }

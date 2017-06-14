@@ -16,7 +16,11 @@ namespace SwarmIntel
             Manager man = new Manager();
             do
             {
-                man.Run();
+                ProblemData pdData = new ProblemData(1);
+                CvrpGenetics cvrpGenetics = new CvrpGenetics(CrossoverMethod.Er,SelectionMethod.Tournament,MutationOperator.Displacement);
+                cvrpGenetics.init_population();
+                cvrpGenetics.run_algorithm();
+                //man.Run();
             } while (Console.ReadKey(true).Key != ConsoleKey.Escape);
         }
     }
